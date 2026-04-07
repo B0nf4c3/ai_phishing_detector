@@ -47,20 +47,16 @@ A Flask-powered Security Operations Center (SOC) dashboard provides:
 
 ## Installation & Setup
 
-
-
 1. **Clone the Repository:**
 
-   ```bash
-
+```bash
    git clone https://github.com/b0nf4c3/ai_phishing_detector.git
-
-   ```
+```
 
 
 2. **Create a python virtual Environment and  Install Dependencies:**
    
-   ```bash
+```bash
    # Create the environment
    python3 -m venv venv
    
@@ -69,17 +65,14 @@ A Flask-powered Security Operations Center (SOC) dashboard provides:
    
    # install the Dependences
    pip install -r requirements.txt
-
-   ```
+```
 
   
 3. **Start the Forensic Engine:**
    
-   ```bash
-
+```bash
    python server/app.py
-
-   ```
+```
 
   
 4. **Load the Extension:**
