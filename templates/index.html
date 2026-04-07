@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SOC Dashboard - URL Intelligence</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0b0e14; color: #e0e0e0; padding: 20px; margin: 0; }
+        .dashboard-container { max-width: 1200px; margin: auto; }
+        .panel { background: #161b22; padding: 25px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); }
+        h1 { color: #00ffc2; text-transform: uppercase; letter-spacing: 2px; margin-top: 0; font-size: 1.5em; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+        textarea { width: 100%; background: #0d1117; color: #00ffc2; border: 1px solid #30363d; padding: 12px; font-family: monospace; border-radius: 4px; box-sizing: border-box; resize: none; margin-bottom: 10px; }
+        .agent-input { background: #0d1117; color: #ff4d4d; border: 1px solid #30363d; padding: 8px; border-radius: 4px; width: 200px; font-family: monospace; }
+        .controls { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        button { padding: 10px 20px; cursor: pointer; font-weight: bold; border: none; border-radius: 4px; text-transform: uppercase; transition: 0.3s; }
+        .btn-analyze { background: #00ffc2; color: #0b0e14; }
+        .btn-download { background: #30363d; color: white; border: 1px solid #484f58; }
+        .btn-pdf { border-color: #00ffc2; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: #8b949e; border-bottom: 2px solid #30363d; padding: 12px; }
+        td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 0.85em; }
+        .tag { padding: 4px 8px; border-radius: 3px; font-weight: bold; font-size: 0.75em; }
+        .tag-red { background: #ff4d4d; color: #0b0e14; }
+        .tag-green { background: #00ffc2; color: #0b0e14; }
+        .log-scroll { max-height: 400px; overflow-y: auto; }
+        .user-id { color: #58a6ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <div class="panel">
+        <h1>Forensic URL Scanner</h1>
+        <textarea id="urlInput" rows="2" placeholder="Analyze URL for forensic anomalies..."></textarea>
+        <div class="controls">
+            <input type="text" id="agentInput" class="agent-input" placeholder="AGENT ID" value="Sh3rl0ck">
+            <button class="btn-analyze" onclick="manualScan()">Analyze Threat</button>
+            <button class="btn-download" onclick="location.href='/download_csv'">Export Raw CSV</button>
+            <button class="btn-download btn-pdf" onclick="location.href='/download_pdf'">Generate PDF Report</button>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h1>Live Activity Logs</h1>
+        <div class="log-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Agent</th>
+                        <th>Analyzed URL</th>
+                        <th>Result</th>
+                        <th>Confidence</th>
+                    </tr>
+                </thead>
+                <tbody id="logBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function manualScan() {
+        const urlInput = document.getElementById('urlInput');
+        const agentInput = document.getElementById('agentInput');
+        const url = urlInput.value.trim();
+        const agent = agentInput.value.trim() || "Anonymous";
+
+        if (!url) return;
+
+        fetch('/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                input: url,
+                user: agent 
+            }) 
+        })
+        .then(res => res.json())
+        .then(data => {
+            urlInput.value = '';
+            updateLogTable(); 
+        })
+        .catch(err => console.error("Manual Scan Error:", err));
+    }
+
+    function updateLogTable() {
+        fetch('/get_session_logs')
+            .then(res => res.json())
+            .then(logs => {
+                const tableBody = document.getElementById('logBody');
+                if (!tableBody) return;
+                
+                tableBody.innerHTML = '';
+                
+                if (Array.isArray(logs)) {
+                    // Sorting reverse to show newest first
+                    logs.slice().reverse().forEach(log => {
+                        const row = tableBody.insertRow();
+                        
+                        // Exact mapping to CSV headers: Timestamp, User, URL, Prediction, Confidence
+                        const timestamp = log.Timestamp || '---';
+                        const user = log.User || '---';
+                        const url = log.URL || '---';
+                        const prediction = log.Prediction || 'UNKNOWN';
+                        const tagClass = (prediction.toUpperCase() === 'PHISHING') ? 'tag-red' : 'tag-green';
+
+                        // Logic to convert decimal confidence (0.98) to percentage (98.0%)
+                        let rawConf = parseFloat(log.Confidence);
+                        let displayConf = "0.0";
+                        if (!isNaN(rawConf)) {
+                            displayConf = (rawConf <= 1) ? (rawConf * 100).toFixed(1) : rawConf.toFixed(1);
+                        }
+
+                        row.innerHTML = `
+                            <td>${timestamp}</td>
+                            <td class="user-id">${user}</td>
+                            <td style="font-family: monospace; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                ${url}
+                            </td>
+                            <td><span class="tag ${tagClass}">${prediction}</span></td>
+                            <td>${displayConf}%</td>
+                        `;
+                    });
+                }
+            })
+            .catch(err => console.error("Log Table Refresh Error:", err));
+    }
+
+    // Auto-refresh every 3 seconds
+    setInterval(updateLogTable, 3000);
+    updateLogTable();
+</script>
+</body>
+</html>

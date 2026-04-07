@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Adding inline styles for the new login elements to match your theme */
+        .login-container { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .agent-input { 
+            background: #1a1a1a; border: 1px solid #00ffc2; color: #00ffc2; 
+            padding: 8px; font-family: monospace; outline: none;
+        }
+        .agent-id-display { 
+            font-family: 'Courier New', monospace; font-weight: bold; 
+            color: #00ffc2; margin-top: 10px; text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>PHISHFORENSICS AI</h2>
+    </div>
+    <div class="content">
+        <div id="login-section">
+            <div class="status-label">Enter Security ID:</div>
+            <div class="login-container">
+                <input type="text" id="username-input" class="agent-input" placeholder="AGENT_ID...">
+                <button id="login-btn" class="btn btn-primary">INITIALIZE SESSION</button>
+            </div>
+        </div>
+
+        <div id="scanner-section" style="display: none;">
+            <div class="status-box">
+                <div class="status-label">Current Site Status:</div>
+                <div id="status-text" class="safe">SCANNING...</div>
+            </div>
+            
+            <button id="rescan-btn" class="btn btn-primary">Re-Scan URL</button>
+            
+            <div class="agent-id-display">
+                AGENT: <span id="agent-display-name"></span>
+            </div>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
