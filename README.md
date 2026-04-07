@@ -47,7 +47,10 @@ A Flask-powered Security Operations Center (SOC) dashboard provides:
 
 ## Installation & Setup
 
+
+
 1. **Clone the Repository:**
+
    ```bash
 
    git clone https://github.com/b0nf4c3/ai_phishing_detector.git
@@ -56,6 +59,7 @@ A Flask-powered Security Operations Center (SOC) dashboard provides:
 
 
 2. **Create a python virtual Environment and  Install Dependencies:**
+   
    ```bash
    # Create the environment
    python3 -m venv venv
@@ -70,6 +74,7 @@ A Flask-powered Security Operations Center (SOC) dashboard provides:
 
   
 3. **Start the Forensic Engine:**
+   
    ```bash
 
    python server/app.py
@@ -82,8 +87,7 @@ A Flask-powered Security Operations Center (SOC) dashboard provides:
    * Enable **Developer Mode**.
    * Click **Load unpacked** and select the `extension/` folder.
 
-  
-## Usage
+##  Usage
 1. Open the extension and "Log In" with your **Agent ID**.
 2. Browse the web; Cerberus will automatically intercept threats.
 3. Access `http://127.0.0.1:5000` to view the **Live Activity Logs** and download forensic reports.
