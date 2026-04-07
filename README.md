@@ -75,7 +75,7 @@ A Flask-powered Security Operations Center (SOC) dashboard provides:
 ```
 
   
-4. **Load the Extension:**
+4. **Load the Extension:**  
    * Open Chrome and go to `chrome://extensions/`  
    * Enable **Developer Mode**.  
    * Click **Load unpacked** and select the `extension/` folder.  
