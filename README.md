@@ -79,8 +79,16 @@ A Flask-powered Security Operations Center (SOC) dashboard provides:
    * Open Chrome and go to `chrome://extensions/`  
    * Enable **Developer Mode**.  
    * Click **Load unpacked** and select the `extension/` folder.  
-
+![alt text](/images/image.png)
 ##  Usage
-1. Open the extension and "Log In" with your **Agent ID**.
-2. Browse the web; Cerberus will automatically intercept threats.
-3. Access `http://127.0.0.1:5000` to view the **Live Activity Logs** and download forensic reports.
+1. Open the extension and "Log In" with your **Agent ID**.  
+For example `test`  
+![alt text](/images/image-1.png)
+2. Browse the web; Cerberus will automatically intercept threats.  
+ Test a legit site   like `https://microsoft.com`  
+ ![alt text](/images/image-2.png)  
+ Then Enter a malicious site  
+![alt text](/images/image-3.png)
+
+3. Access `http://127.0.0.1:5000` to view the **Live Activity Logs** and download forensic reports.  
+![alt text](/images/image-4.png)
